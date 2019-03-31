@@ -1,0 +1,17 @@
+bload "scorpio.hgr",2000
+
+bload "scorpio.minipix",5800
+
+bload "minipixviewer",6000
+
+sym zSrcPtr     = $F7
+sym zSrcBits    = $F9
+sym zSrcMask    = $FA
+sym zSrcCol     = $FB
+
+sym zDstRow     = $FC
+sym zDstBits    = $FD
+sym zDstColMod7 = $FE
+sym zDstRowMod3 = $FF
+
+sym PrintShopSprite = $5800

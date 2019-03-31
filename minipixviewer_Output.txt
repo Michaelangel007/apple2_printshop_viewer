@@ -1,0 +1,242 @@
+------+---------------------------+-------------+----+---------+------+-----------------------+-------------------------------------------------------------------
+ Line | # File               Line | Line Type   | MX |  Reloc  | Size | Address   Object Code |  Source Code                                                      
+------+---------------------------+-------------+----+---------+------+-----------------------+-------------------------------------------------------------------
+    1 |  1 minipixviewer.s      1 | Comment     | 11 |         |    0 | 00/8000               | ; PrintShop / MiniPix Unpacker and Viewer
+    2 |  1 minipixviewer.s      2 | Comment     | 11 |         |    0 | 00/8000               | ; Version 5, March 31, 2019
+    3 |  1 minipixviewer.s      3 | Comment     | 11 |         |    0 | 00/8000               | ; Copyleft Michaelangel007
+    4 |  1 minipixviewer.s      4 | Comment     | 11 |         |    0 | 00/8000               | ; "Sharing is Caring"
+    5 |  1 minipixviewer.s      5 | Empty       | 11 |         |    0 | 00/8000               |                                               
+    6 |  1 minipixviewer.s      6 | Empty       | 11 |         |    0 | 00/8000               |                                               
+    7 |  1 minipixviewer.s      7 | Comment     | 11 |         |    0 | 00/8000               | ; === Our Zero Page Variables ===
+    8 |  1 minipixviewer.s      8 | Empty       | 11 |         |    0 | 00/8000               |                                               
+    9 |  1 minipixviewer.s      9 | Equivalence | 11 |         |    0 | 00/8000               | zSrcPtr            =     $F7                  ; 16-bit pointr to source packed PrintShop graphic
+   10 |  1 minipixviewer.s     10 | Equivalence | 11 |         |    0 | 00/8000               | zSrcBits           =     $F9                  
+   11 |  1 minipixviewer.s     11 | Equivalence | 11 |         |    0 | 00/8000               | zSrcMask           =     $FA                  ; counter 0 .. 7
+   12 |  1 minipixviewer.s     12 | Equivalence | 11 |         |    0 | 00/8000               | zSrcCol            =     $FB                  ; cache of Y reg for lda (zSrcPtr),Y
+   13 |  1 minipixviewer.s     13 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   14 |  1 minipixviewer.s     14 | Equivalence | 11 |         |    0 | 00/8000               | zDstPtr            =     $26                  ; 16-bit pointer to dest; GBASL
+   15 |  1 minipixviewer.s     15 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   16 |  1 minipixviewer.s     16 | Equivalence | 11 |         |    0 | 00/8000               | zDstRow            =     $FC                  
+   17 |  1 minipixviewer.s     17 | Equivalence | 11 |         |    0 | 00/8000               | zDstBits           =     $FD                  
+   18 |  1 minipixviewer.s     18 | Equivalence | 11 |         |    0 | 00/8000               | zDstColMod7        =     $FE                  
+   19 |  1 minipixviewer.s     19 | Equivalence | 11 |         |    0 | 00/8000               | zDstRowMod3        =     $FF                  
+   20 |  1 minipixviewer.s     20 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   21 |  1 minipixviewer.s     21 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   22 |  1 minipixviewer.s     22 | Comment     | 11 |         |    0 | 00/8000               | ; === PrintShop ===
+   23 |  1 minipixviewer.s     23 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   24 |  1 minipixviewer.s     24 | Equivalence | 11 |         |    0 | 00/8000               | PrintShopSprite    =     $5800                ; Default load adddress
+   25 |  1 minipixviewer.s     25 | Comment     | 11 |         |    0 | 00/8000               | ;LEN            =   572 ; File size
+   26 |  1 minipixviewer.s     26 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   27 |  1 minipixviewer.s     27 | Comment     | 11 |         |    0 | 00/8000               | ; Dimensions
+   28 |  1 minipixviewer.s     28 | Equivalence | 11 |         |    0 | 00/8000               | W_PIXELS           =     88                   
+   29 |  1 minipixviewer.s     29 | Equivalence | 11 |         |    0 | 00/8000               | W_BYTES            =     88/8                 ; Source (Packed) Bytes/Row
+   30 |  1 minipixviewer.s     30 | Equivalence | 11 |         |    0 | 00/8000               | H_PIXELS           =     52                   
+   31 |  1 minipixviewer.s     31 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   32 |  1 minipixviewer.s     32 | Equivalence | 11 |         |    0 | 00/8000               | X_SCALE            =     2                    ; Not actually used as hard-coded. For reference
+   33 |  1 minipixviewer.s     33 | Equivalence | 11 |         |    0 | 00/8000               | Y_SCALE            =     3                    
+   34 |  1 minipixviewer.s     34 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   35 |  1 minipixviewer.s     35 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   36 |  1 minipixviewer.s     36 | Comment     | 11 |         |    0 | 00/8000               | ; === Applesoft/Monitor Zero Page Variables ===
+   37 |  1 minipixviewer.s     37 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   38 |  1 minipixviewer.s     38 | Equivalence | 11 |         |    0 | 00/8000               | MON_GBAS           =     $26                  ; 16-bit Pointer to HGR scanline
+   39 |  1 minipixviewer.s     39 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   40 |  1 minipixviewer.s     40 | Equivalence | 11 |         |    0 | 00/8000               | HGR_COLOR          =     $E4                  ;
+   41 |  1 minipixviewer.s     41 | Equivalence | 11 |         |    0 | 00/8000               | HGR_HORIZ          =     $E5                  ; X column / 7 = scanline byte offset
+   42 |  1 minipixviewer.s     42 | Equivalence | 11 |         |    0 | 00/8000               | HGR_PAGE           =     $E6                  ; $20 or $40
+   43 |  1 minipixviewer.s     43 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   44 |  1 minipixviewer.s     44 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   45 |  1 minipixviewer.s     45 | Comment     | 11 |         |    0 | 00/8000               | ; === I/O Softswitches ===
+   46 |  1 minipixviewer.s     46 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   47 |  1 minipixviewer.s     47 | Equivalence | 11 |         |    0 | 00/8000               | TXTCLR             =     $C050                ; Graphics mode
+   48 |  1 minipixviewer.s     48 | Equivalence | 11 |         |    0 | 00/8000               | TXTSET             =     $C051                
+   49 |  1 minipixviewer.s     49 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   50 |  1 minipixviewer.s     50 | Equivalence | 11 |         |    0 | 00/8000               | MIXCLR             =     $C052                ; Split screen
+   51 |  1 minipixviewer.s     51 | Equivalence | 11 |         |    0 | 00/8000               | MIXSET             =     $C053                ; Full screen
+   52 |  1 minipixviewer.s     52 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   53 |  1 minipixviewer.s     53 | Equivalence | 11 |         |    0 | 00/8000               | PAGE1              =     $C054                
+   54 |  1 minipixviewer.s     54 | Equivalence | 11 |         |    0 | 00/8000               | PAGE2              =     $C055                
+   55 |  1 minipixviewer.s     55 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   56 |  1 minipixviewer.s     56 | Equivalence | 11 |         |    0 | 00/8000               | LORES              =     $C056                
+   57 |  1 minipixviewer.s     57 | Equivalence | 11 |         |    0 | 00/8000               | HIRES              =     $C057                
+   58 |  1 minipixviewer.s     58 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   59 |  1 minipixviewer.s     59 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   60 |  1 minipixviewer.s     60 | Comment     | 11 |         |    0 | 00/8000               | ; === Applesoft/Monitor ROM ===
+   61 |  1 minipixviewer.s     61 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   62 |  1 minipixviewer.s     62 | Equivalence | 11 |         |    0 | 00/8000               | HGR                =     $F3E2                ; Clear and View HGR with mixed text/graphics
+   63 |  1 minipixviewer.s     63 | Equivalence | 11 |         |    0 | 00/8000               | HCLR               =     $F3F2                
+   64 |  1 minipixviewer.s     64 | Equivalence | 11 |         |    0 | 00/8000               | HPOSN              =     $F411                ; Set GBASL, GBASH, MON.HMASK, HGR.BITS ; uses HGR.PAGE,
+   65 |  1 minipixviewer.s     65 | Equivalence | 11 |         |    0 | 00/8000               | MOVE.DOWN          =     $F505                ; Update GBASL, GBASH
+   66 |  1 minipixviewer.s     66 | Equivalence | 11 |         |    0 | 00/8000               | COLORTBL           =     $F6F6                ; byte colors[7]
+   67 |  1 minipixviewer.s     67 | Equivalence | 11 |         |    0 | 00/8000               | HCOLOR             =     $F6E9                
+   68 |  1 minipixviewer.s     68 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   69 |  1 minipixviewer.s     69 | Equivalence | 11 |         |    0 | 00/8000               | HOME               =     $FC58                
+   70 |  1 minipixviewer.s     70 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   71 |  1 minipixviewer.s     71 | Comment     | 11 |         |    0 | 00/8000               | ; =====================================================================
+   72 |  1 minipixviewer.s     72 | Empty       | 11 |         |    0 | 00/8000               |                                               
+   73 |  1 minipixviewer.s     73 | Directive   | 11 |         |    0 | 00/8000               |                    ORG   $6000                
+   74 |  1 minipixviewer.s     74 | Empty       | 11 |         |    0 | 00/6000               |                                               
+   75 |  1 minipixviewer.s     75 | Empty       | 11 |         |    0 | 00/6000               | PrintShopViewer                               
+   76 |  1 minipixviewer.s     76 | Empty       | 11 |         |    0 | 00/6000               |                                               
+   77 |  1 minipixviewer.s     77 | Code        | 11 |         |    3 | 00/6000 : 20 E2 F3    |                    jsr   {$F3E2}              
+   78 |  1 minipixviewer.s     78 | Code        | 11 |         |    3 | 00/6003 : 8D 52 C0    |                    sta   {$C052}              ; Full screen
+   79 |  1 minipixviewer.s     79 | Empty       | 11 |         |    0 | 00/6006               |                                               
+   80 |  1 minipixviewer.s     80 | Code        | 11 |         |    2 | 00/6006 : A2 58       |                    ldx   #>{$5800}            
+   81 |  1 minipixviewer.s     81 | Code        | 11 |         |    2 | 00/6008 : A0 00       |                    ldy   #<{$5800}            
+   82 |  1 minipixviewer.s     82 | Code        | 11 |         |    2 | 00/600A : 86 F8       |                    stx   {$F7}+1              
+   83 |  1 minipixviewer.s     83 | Code        | 11 |         |    2 | 00/600C : 84 F7       |                    sty   {$F7}+0              
+   84 |  1 minipixviewer.s     84 | Empty       | 11 |         |    0 | 00/600E               |                                               
+   85 |  1 minipixviewer.s     85 | Comment     | 11 |         |    0 | 00/600E               | ; Src PS 2x is 88 * 2x scaling = 176 pixels
+   86 |  1 minipixviewer.s     86 | Comment     | 11 |         |    0 | 00/600E               | ; Dstr HGR screen is 40 columns * 7 px/col = 280 pixels
+   87 |  1 minipixviewer.s     87 | Comment     | 11 |         |    0 | 00/600E               | ; =====================================================================
+   88 |  1 minipixviewer.s     88 | Empty       | 11 |         |    0 | 00/600E               |                                               
+   89 |  1 minipixviewer.s     89 | Comment     | 11 |         |    0 | 00/600E               | ; Horz Centering: 
+   90 |  1 minipixviewer.s     90 | Comment     | 11 |         |    0 | 00/600E               | ;    = (280 - W_PIXELS*X_SCALE)/2
+   91 |  1 minipixviewer.s     91 | Comment     | 11 |         |    0 | 00/600E               | ;    = (280 - 88*2)/2
+   92 |  1 minipixviewer.s     92 | Comment     | 11 |         |    0 | 00/600E               | ;    = 52 px/col
+   93 |  1 minipixviewer.s     93 | Comment     | 11 |         |    0 | 00/600E               | ;    = 52 px / 7px/col
+   94 |  1 minipixviewer.s     94 | Comment     | 11 |         |    0 | 00/600E               | ;    = 7.42... = scanline offset
+   95 |  1 minipixviewer.s     95 | Comment     | 11 |         |    0 | 00/600E               | ;
+   96 |  1 minipixviewer.s     96 | Comment     | 11 |         |    0 | 00/600E               | ; 52 px mod 7 px/byte
+   97 |  1 minipixviewer.s     97 | Comment     | 11 |         |    0 | 00/600E               | ;    = 52 mod 7
+   98 |  1 minipixviewer.s     98 | Comment     | 11 |         |    0 | 00/600E               | ;    = 3
+   99 |  1 minipixviewer.s     99 | Equivalence | 11 |         |    0 | 00/600E               | CENTER_X           =     52                   
+  100 |  1 minipixviewer.s    100 | Equivalence | 11 |         |    0 | 00/600E               | X_MOD_7            =     1                    ; Since each pixel is doubled we need to divide (52 mod 7) / 2
+  101 |  1 minipixviewer.s    101 | Empty       | 11 |         |    0 | 00/600E               |                                               
+  102 |  1 minipixviewer.s    102 | Comment     | 11 |         |    0 | 00/600E               | ; Vert Centering:
+  103 |  1 minipixviewer.s    103 | Comment     | 11 |         |    0 | 00/600E               | ;    = (192 - H_PIXELS*Y_SCALE)/2
+  104 |  1 minipixviewer.s    104 | Comment     | 11 |         |    0 | 00/600E               | ;    = (192 - 52*3)/2
+  105 |  1 minipixviewer.s    105 | Comment     | 11 |         |    0 | 00/600E               | ;    = (192 - 156) / 2 
+  106 |  1 minipixviewer.s    106 | Comment     | 11 |         |    0 | 00/600E               | ;    = 18
+  107 |  1 minipixviewer.s    107 | Equivalence | 11 |         |    0 | 00/600E               | CENTER_Y           =     {192-{{52}*{3}}}/2   
+  108 |  1 minipixviewer.s    108 | Empty       | 11 |         |    0 | 00/600E               |                                               
+  109 |  1 minipixviewer.s    109 | Comment     | 11 |         |    0 | 00/600E               | ; DEBUG -- Same x,y as PrintShop Graphic Editor
+  110 |  1 minipixviewer.s    110 | Comment     | 11 |         |    0 | 00/600E               | ;CENTER_Y = 23
+  111 |  1 minipixviewer.s    111 | Comment     | 11 |         |    0 | 00/600E               | ;CENTER_X = 0
+  112 |  1 minipixviewer.s    112 | Empty       | 11 |         |    0 | 00/600E               |                                               
+  113 |  1 minipixviewer.s    113 | Empty       | 11 |         |    0 | 00/600E               |                                               
+  114 |  1 minipixviewer.s    114 | Comment     | 11 |         |    0 | 00/600E               | ; Image will be centered on screen
+  115 |  1 minipixviewer.s    115 | Comment     | 11 |         |    0 | 00/600E               | ; HGR does NOT need to be cleared to black as we set each byte to zero
+  116 |  1 minipixviewer.s    116 | Comment     | 11 |         |    0 | 00/600E               | ; ==========
+  117 |  1 minipixviewer.s    117 | Empty       | 11 |         |    0 | 00/600E               | UnpackToScreenHGR                             
+  118 |  1 minipixviewer.s    118 | Code        | 11 |         |    2 | 00/600E : A9 12       |                    lda   #{{192-{{52}*{3}}}/2}; y = 18
+  119 |  1 minipixviewer.s    119 | Code        | 11 |         |    2 | 00/6010 : 85 FC       |                    sta   {$FC}                
+  120 |  1 minipixviewer.s    120 | Code        | 11 |         |    2 | 00/6012 : A0 00       |                    ldy   #0                   ; HPOSN: column = Y,X
+  121 |  1 minipixviewer.s    121 | Code        | 11 |         |    2 | 00/6014 : 84 E4       |                    sty   {$E4}                ; 0 = Black
+  122 |  1 minipixviewer.s    122 | Empty       | 11 |         |    0 | 00/6016               |                                               
+  123 |  1 minipixviewer.s    123 | Empty       | 11 |         |    0 | 00/6016               | _NextTripleY                                  
+  124 |  1 minipixviewer.s    124 | Code        | 11 |         |    2 | 00/6016 : 84 FF       |                    sty   {$FF}                ; Do y scaling
+  125 |  1 minipixviewer.s    125 | Empty       | 11 |         |    0 | 00/6018               |                                               
+  126 |  1 minipixviewer.s    126 | Empty       | 11 |         |    0 | 00/6018               | _NextSrcRow                                   
+  127 |  1 minipixviewer.s    127 | Code        | 11 |         |    2 | 00/6018 : A2 34       |                    ldx   #{52}                ; HPOSN: column = y,X
+  128 |  1 minipixviewer.s    128 | Code        | 11 |         |    2 | 00/601A : A5 FC       |                    lda   {$FC}                ; HPOSN: row = A
+  129 |  1 minipixviewer.s    129 | Code        | 11 |         |    3 | 00/601C : 20 17 F4    |                    jsr   {$F411}+6            ; We don't use HGR.X .. HGR.Y @ $E0 .. $E2
+  130 |  1 minipixviewer.s    130 | Code        | 11 |         |    1 | 00/601F : A8          |                    tay                        ; on exit A = HGR.COLOR = 0 @ $F450
+  131 |  1 minipixviewer.s    131 | Code        | 11 |         |    2 | 00/6020 : 85 FB       |                    sta   {$FB}                ; Y = zSrcCol
+  132 |  1 minipixviewer.s    132 | Code        | 11 |         |    2 | 00/6022 : 85 FD       |                    sta   {$FD}                
+  133 |  1 minipixviewer.s    133 | Empty       | 11 |         |    0 | 00/6024               |                                               
+  134 |  1 minipixviewer.s    134 | Code        | 11 |         |    1 | 00/6024 : 18          |                    clc                        ; GBAS points to start of scanline
+  135 |  1 minipixviewer.s    135 | Code        | 11 |         |    2 | 00/6025 : A5 E5       |                    lda   {$E5}                ; Take X column into account
+  136 |  1 minipixviewer.s    136 | Code        | 11 |         |    2 | 00/6027 : 65 26       |                    adc   {$26}                
+  137 |  1 minipixviewer.s    137 | Code        | 11 |         |    2 | 00/6029 : 85 26       |                    sta   {$26}                
+  138 |  1 minipixviewer.s    138 | Empty       | 11 |         |    0 | 00/602B               |                                               
+  139 |  1 minipixviewer.s    139 | Code        | 11 |         |    2 | 00/602B : A2 01       |                    ldx   #{1}                 ; LDX Can be optimized out if x mod 7 is 0
+  140 |  1 minipixviewer.s    140 | Code        | 11 |         |    2 | 00/602D : 86 FE       |                    stx   {$FE}                ;
+  141 |  1 minipixviewer.s    141 | Empty       | 11 |         |    0 | 00/602F               |                                               
+  142 |  1 minipixviewer.s    142 | Empty       | 11 |         |    0 | 00/602F               | _NextSrcByte                                  
+  143 |  1 minipixviewer.s    143 | Code        | 11 |         |    2 | 00/602F : A9 01       |                    lda   #1                   ; Unpack 8 bits since source = monochrome 8 bits/pix
+  144 |  1 minipixviewer.s    144 | Code        | 11 |         |    2 | 00/6031 : 85 FA       |                    sta   {$FA}                
+  145 |  1 minipixviewer.s    145 | Empty       | 11 |         |    0 | 00/6033               |                                               
+  146 |  1 minipixviewer.s    146 | Code        | 11 |         |    2 | 00/6033 : B1 F7       |                    lda   ({$F7}),y            ; Loop Invariant: Y = zSrcCol
+  147 |  1 minipixviewer.s    147 | Code        | 11 |         |    2 | 00/6035 : 85 F9       |                    sta   {$F9}                
+  148 |  1 minipixviewer.s    148 | Empty       | 11 |         |    0 | 00/6037               |                                               
+  149 |  1 minipixviewer.s    149 | Empty       | 11 |         |    0 | 00/6037               | _UnpackSrcBits                                ; same source byte
+  150 |  1 minipixviewer.s    150 | Code        | 11 |         |    2 | 00/6037 : 06 F9       |                    asl   {$F9}                
+  151 |  1 minipixviewer.s    151 | Code        | 11 |         |    2 | 00/6039 : A5 FD       |                    lda   {$FD}                
+  152 |  1 minipixviewer.s    152 | Code        | 11 |         |    2 | 00/603B : B0 05       |                    bcs   _PutOne              
+  153 |  1 minipixviewer.s    153 | Empty       | 11 |         |    0 | 00/603D               | _PutZero                                      ; 0 = white
+  154 |  1 minipixviewer.s    154 | Code        | 11 |         |    3 | 00/603D : 1D 9F 60    |                    ora   Column2ColorHGR,X    
+  155 |  1 minipixviewer.s    155 | Code        | 11 |         |    2 | 00/6040 : 85 FD       |                    sta   {$FD}                
+  156 |  1 minipixviewer.s    156 | Empty       | 11 |         |    0 | 00/6042               | _PutOne                                       ; 1 = black
+  157 |  1 minipixviewer.s    157 | Comment     | 11 |         |    0 | 00/6042               |                             ; nothing to do since zDstBits initialized to zero
+  158 |  1 minipixviewer.s    158 | Code        | 11 |         |    1 | 00/6042 : E8          |                    inx                        
+  159 |  1 minipixviewer.s    159 | Code        | 11 |         |    2 | 00/6043 : E0 04       |                    cpx   #4                   
+  160 |  1 minipixviewer.s    160 | Code        | 11 |         |    2 | 00/6045 : F0 04       |                    beq   _NextDstByte         
+  161 |  1 minipixviewer.s    161 | Code        | 11 |         |    2 | 00/6047 : E0 07       |                    cpx   #7                   
+  162 |  1 minipixviewer.s    162 | Code        | 11 |         |    2 | 00/6049 : D0 13       |                    bne   _SameDstByte         
+  163 |  1 minipixviewer.s    163 | Empty       | 11 |         |    0 | 00/604B               |                                               
+  164 |  1 minipixviewer.s    164 | Empty       | 11 |         |    0 | 00/604B               | _NextDstByte                                  
+  165 |  1 minipixviewer.s    165 | Code        | 11 |         |    2 | 00/604B : 84 FB       |                    sty   {$FB}                ; 65C02: PHY
+  166 |  1 minipixviewer.s    166 | Code        | 11 |         |    3 | 00/604D : 20 8A 60    |                    jsr   PutHgrByte           
+  167 |  1 minipixviewer.s    167 | Code        | 11 |         |    2 | 00/6050 : 85 FD       |                    sta   {$FD}                
+  168 |  1 minipixviewer.s    168 | Code        | 11 |         |    2 | 00/6052 : A4 FB       |                    ldy   {$FB}                ; 65C02: PLY
+  169 |  1 minipixviewer.s    169 | Empty       | 11 |         |    0 | 00/6054               |                                               
+  170 |  1 minipixviewer.s    170 | Code        | 11 |         |    2 | 00/6054 : E6 26       |                    inc   {$26}+0              
+  171 |  1 minipixviewer.s    171 | Code        | 11 |         |    2 | 00/6056 : E0 07       |                    cpx   #7                   
+  172 |  1 minipixviewer.s    172 | Code        | 11 |         |    2 | 00/6058 : D0 04       |                    bne   _SameDstByte         
+  173 |  1 minipixviewer.s    173 | Code        | 11 |         |    2 | 00/605A : A2 00       |                    ldx   #0                   
+  174 |  1 minipixviewer.s    174 | Code        | 11 |         |    2 | 00/605C : 86 FE       |                    stx   {$FE}                
+  175 |  1 minipixviewer.s    175 | Empty       | 11 |         |    0 | 00/605E               |                                               
+  176 |  1 minipixviewer.s    176 | Empty       | 11 |         |    0 | 00/605E               | _SameDstByte                                  
+  177 |  1 minipixviewer.s    177 | Code        | 11 |         |    2 | 00/605E : 06 FA       |                    asl   {$FA}                
+  178 |  1 minipixviewer.s    178 | Code        | 11 |         |    2 | 00/6060 : 90 D5       |                    bcc   _UnpackSrcBits       ; After 8 loops
+  179 |  1 minipixviewer.s    179 | Empty       | 11 |         |    0 | 00/6062               |                                               
+  180 |  1 minipixviewer.s    180 | Code        | 11 |         |    1 | 00/6062 : C8          |                    iny                        
+  181 |  1 minipixviewer.s    181 | Code        | 11 |         |    2 | 00/6063 : 84 FB       |                    sty   {$FB}                
+  182 |  1 minipixviewer.s    182 | Code        | 11 |         |    2 | 00/6065 : C0 0B       |                    cpy   #{88/8}              
+  183 |  1 minipixviewer.s    183 | Code        | 11 |         |    2 | 00/6067 : 90 C6       |                    bcc   _NextSrcByte         
+  184 |  1 minipixviewer.s    184 | Empty       | 11 |         |    0 | 00/6069               |                                               
+  185 |  1 minipixviewer.s    185 | Code        | 11 |         |    2 | 00/6069 : A5 FD       |                    lda   {$FD}                ;
+  186 |  1 minipixviewer.s    186 | Comment     | 11 |         |    0 | 00/606B               | ;        ldy #0              ; Need Y=0 for :NextSrcRow --> col = Y,X
+  187 |  1 minipixviewer.s    187 | Comment     | 11 |         |    0 | 00/606B               | ;        sta (zDstPtr),Y     ; Need last pixel on this scanline
+  188 |  1 minipixviewer.s    188 | Code        | 11 |         |    3 | 00/606B : 20 8A 60    |                    jsr   PutHgrByte           
+  189 |  1 minipixviewer.s    189 | Empty       | 11 |         |    0 | 00/606E               |                                               
+  190 |  1 minipixviewer.s    190 | Comment     | 11 |         |    0 | 00/606E               | ; Repeat each src line 3 times       
+  191 |  1 minipixviewer.s    191 | Code        | 11 |         |    2 | 00/606E : E6 FC       |                    inc   {$FC}                
+  192 |  1 minipixviewer.s    192 | Code        | 11 |         |    2 | 00/6070 : E6 FF       |                    inc   {$FF}                
+  193 |  1 minipixviewer.s    193 | Code        | 11 |         |    2 | 00/6072 : A6 FF       |                    ldx   {$FF}                
+  194 |  1 minipixviewer.s    194 | Code        | 11 |         |    2 | 00/6074 : E0 03       |                    cpx   #3                   
+  195 |  1 minipixviewer.s    195 | Code        | 11 |         |    2 | 00/6076 : D0 A0       |                    bne   _NextSrcRow          ; Y = 0 --> col = Y,X
+  196 |  1 minipixviewer.s    196 | Empty       | 11 |         |    0 | 00/6078               |                                               
+  197 |  1 minipixviewer.s    197 | Code        | 11 |         |    1 | 00/6078 : 18          |                    clc                        ; Move to next linear source row
+  198 |  1 minipixviewer.s    198 | Code        | 11 |         |    2 | 00/6079 : A9 0B       |                    lda   #{88/8}              
+  199 |  1 minipixviewer.s    199 | Code        | 11 |         |    2 | 00/607B : 65 F7       |                    adc   {$F7}+0              
+  200 |  1 minipixviewer.s    200 | Code        | 11 |         |    2 | 00/607D : 85 F7       |                    sta   {$F7}+0              
+  201 |  1 minipixviewer.s    201 | Code        | 11 |         |    2 | 00/607F : 90 02       |                    bcc   _SameSrcPage         
+  202 |  1 minipixviewer.s    202 | Empty       | 11 |         |    0 | 00/6081               | _NextSrcPage                                  
+  203 |  1 minipixviewer.s    203 | Code        | 11 |         |    2 | 00/6081 : E6 F8       |                    inc   {$F7}+1              
+  204 |  1 minipixviewer.s    204 | Empty       | 11 |         |    0 | 00/6083               | _SameSrcPage                                  
+  205 |  1 minipixviewer.s    205 | Empty       | 11 |         |    0 | 00/6083               |                                               
+  206 |  1 minipixviewer.s    206 | Code        | 11 |         |    2 | 00/6083 : A5 FC       |                    lda   {$FC}                
+  207 |  1 minipixviewer.s    207 | Code        | 11 |         |    2 | 00/6085 : C9 AE       |                    cmp   #{52}*{3}+{{192-{{52}*{3}}}/2}
+  208 |  1 minipixviewer.s    208 | Code        | 11 |         |    2 | 00/6087 : D0 8D       |                    bne   _NextTripleY         
+  209 |  1 minipixviewer.s    209 | Empty       | 11 |         |    0 | 00/6089               | _Done                                         
+  210 |  1 minipixviewer.s    210 | Code        | 11 |         |    1 | 00/6089 : 60          |                    rts                        
+  211 |  1 minipixviewer.s    211 | Empty       | 11 |         |    0 | 00/608A               |                                               
+  212 |  1 minipixviewer.s    212 | Empty       | 11 |         |    0 | 00/608A               | PutHgrByte                                    
+  213 |  1 minipixviewer.s    213 | Code        | 11 |         |    1 | 00/608A : 48          |                    pha                        ; Save High Bit
+  214 |  1 minipixviewer.s    214 | Code        | 11 |         |    2 | 00/608B : 29 7F       |                    and   #$7f                 ; HGR = 7 bits/pixel as we don't want half-pixels
+  215 |  1 minipixviewer.s    215 | Code        | 11 |         |    2 | 00/608D : A0 00       |                    ldy   #0                   ; Need Y=0 for :NextSrcRow --> col = Y,X
+  216 |  1 minipixviewer.s    216 | Code        | 11 |         |    2 | 00/608F : 91 26       |                    sta   ({$26}),Y            ; Need last pixel on this scanline
+  217 |  1 minipixviewer.s    217 | Code        | 11 |         |    1 | 00/6091 : 68          |                    pla                        ; Restore High Bit
+  218 |  1 minipixviewer.s    218 | Code        | 11 |         |    1 | 00/6092 : 2A          |                    rol                        ; C = Bit 7 propogate
+  219 |  1 minipixviewer.s    219 | Code        | 11 |         |    2 | 00/6093 : A9 00       |                    lda   #0                   ; into next dst byte bit 0
+  220 |  1 minipixviewer.s    220 | Code        | 11 |         |    1 | 00/6095 : 2A          |                    rol                        
+  221 |  1 minipixviewer.s    221 | Code        | 11 |         |    2 | 00/6096 : F0 06       |                    beq   _NoCarry             ; if we have high bit crossing even into odd column
+  222 |  1 minipixviewer.s    222 | Code        | 11 |         |    2 | 00/6098 : E0 04       |                    cpx   #4                   
+  223 |  1 minipixviewer.s    223 | Code        | 11 |         |    2 | 00/609A : D0 02       |                    bne   _NoCarry             
+  224 |  1 minipixviewer.s    224 | Code        | 11 |         |    2 | 00/609C : A9 03       |                    lda   #3                   ; then we also need to the bottom 2 bits
+  225 |  1 minipixviewer.s    225 | Empty       | 11 |         |    0 | 00/609E               | _NoCarry                                      
+  226 |  1 minipixviewer.s    226 | Code        | 11 |         |    1 | 00/609E : 60          |                    rts                        
+  227 |  1 minipixviewer.s    227 | Empty       | 11 |         |    0 | 00/609F               |                                               
+  228 |  1 minipixviewer.s    228 | Comment     | 11 |         |    0 | 00/609F               | ; Single Pixel to Double Pixel
+  229 |  1 minipixviewer.s    229 | Empty       | 11 |         |    0 | 00/609F               | Column2ColorHGR                               
+  230 |  1 minipixviewer.s    230 | Empty       | 11 |         |    0 | 00/609F               |                                               
+  231 |  1 minipixviewer.s    231 | Data        | 11 |         |    1 | 00/609F : 06          |                    DB    %00000110            ; [0] = $06 Even Column
+  232 |  1 minipixviewer.s    232 | Data        | 11 |         |    1 | 00/60A0 : 18          |                    DB    %00011000            ; [1] = $18
+  233 |  1 minipixviewer.s    233 | Data        | 11 |         |    1 | 00/60A1 : 60          |                    DB    %01100000            ; [2] = $60
+  234 |  1 minipixviewer.s    234 | Data        | 11 |         |    1 | 00/60A2 : 80          |                    DB    %10000000            ; [3] = $80
+  235 |  1 minipixviewer.s    235 | Data        | 11 |         |    1 | 00/60A3 : 0C          |                    DB    %00001100            ; [4] = $0C Odd Column
+  236 |  1 minipixviewer.s    236 | Data        | 11 |         |    1 | 00/60A4 : 30          |                    DB    %00110000            ; [5] = $30
+  237 |  1 minipixviewer.s    237 | Data        | 11 |         |    1 | 00/60A5 : C0          |                    DB    %11000000            ; [6] = $C0
+  238 |  1 minipixviewer.s    238 | Empty       | 11 |         |    0 | 00/60A6               |                                               
+------+---------------------------+-------------+----+---------+------+-----------------------+-------------------------------------------------------------------
